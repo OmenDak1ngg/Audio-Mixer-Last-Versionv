@@ -1,39 +1,30 @@
 using UnityEngine;
+using UnityEngine.UI;
 
+[RequireComponent(typeof(Button))]
 public class SoundButton : MonoBehaviour
 {
     [SerializeField] private AudioSource _sound;
 
-    private bool _canPlay;
+    private Button _button;
 
-    private float _startSoundTime;
-    private float _currentSoundTime;
+    private void OnEnable()
+    {
+        _button.onClick.AddListener(PlaySound);
+    }
+
+    private void OnDisable()
+    {
+        _button.onClick.RemoveListener(PlaySound);
+    }
 
     private void Awake()
     {
-        _canPlay = true;
-        _startSoundTime = _sound.clip.length;
-    }
-
-    private void Update()
-    {
-        if (_currentSoundTime <= 0)
-        {
-            _canPlay = true;
-            _currentSoundTime = _startSoundTime;
-        }
-        else
-        {
-            _currentSoundTime -= Time.deltaTime;
-        }
+        _button = GetComponent<Button>();
     }
 
     public void PlaySound()
     {
-        if (_canPlay)
-        {
-            _sound.Play();
-            _canPlay = false;
-        }
+        _sound.PlayOneShot(_sound.clip);
     }
 }

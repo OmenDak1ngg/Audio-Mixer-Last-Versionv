@@ -1,18 +1,31 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.UI;
 
+[RequireComponent(typeof(Toggle))]
 public class TogglerVolume : MonoBehaviour
 {
-    [SerializeField] private MixerGroupName _groupName;
-    [SerializeField] private AudioMixerGroup _mixer;
+    [SerializeField] private AudioListener _listener;
 
-    private float _minVolumeDb = -80f;
-    private float _maxVolumeDb = 0f;
+    private Toggle _toggle;
+
+    private void OnEnable()
+    {
+        _toggle.onValueChanged.AddListener(ToggleVolume);
+    }
+
+    private void OnDisable()
+    {
+        _toggle.onValueChanged.RemoveListener(ToggleVolume);
+    }
+
+    private void Awake()
+    {
+        _toggle = GetComponent<Toggle>();
+    }
 
     public void ToggleVolume(bool enabled)
     {
-        float masterVolume = enabled ? _maxVolumeDb : _minVolumeDb;
-
-        _mixer.audioMixer.SetFloat(_groupName.ToString(), masterVolume);
+        _listener.enabled = enabled;
     }
 }
